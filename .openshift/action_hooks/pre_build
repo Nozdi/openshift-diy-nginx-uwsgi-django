@@ -9,6 +9,8 @@ VIRTUALENV_VERSION="1.9.1"
 PCRE_VERSION="8.32"
 NGINX_VERSION="1.4.0"
 MEMCACHED_VERSION="1.4.15"
+SETUPTOOLS_VERSION="0.6c11"
+PIP_VERSION="1.1"
 
 PYTHON_CURRENT=`${OPENSHIFT_DATA_DIR}/bin/python -c 'import sys; print(".".join(map(str, sys.version_info[:3])))'`
 if [ "$PYTHON_CURRENT" != "$PYTHON_VERSION" ]; then
@@ -19,13 +21,29 @@ if [ "$PYTHON_CURRENT" != "$PYTHON_VERSION" ]; then
 	./configure --prefix=$OPENSHIFT_DATA_DIR
 	make install
 fi
-  
+
+if [ ! -f $OPENSHIFT_DATA_DIR/bin/easy_install ]; then
+    cd $OPENSHIFT_TMP_DIR
+    wget http://pypi.python.org/packages/source/s/setuptools/setuptools-${SETUPTOOLS_VERSION}.tar.gz --no-check-certificate
+    tar zxf setuptools-${SETUPTOOLS_VERSION}.tar.gz
+    cd setuptools-${SETUPTOOLS_VERSION}
+    $OPENSHIFT_DATA_DIR/bin/python setup.py install
+fi
+
+if [ ! -f $OPENSHIFT_DATA_DIR/bin/pip ]; then
+    cd $OPENSHIFT_TMP_DIR
+    wget http://pypi.python.org/packages/source/p/pip/pip-${PIP_VERSION}.tar.gz --no-check-certificate
+    tar zxf pip-${PIP_VERSION}.tar.gz
+    cd pip-${PIP_VERSION}
+    $OPENSHIFT_DATA_DIR/bin/python setup.py install
+fi
+
 if [ ! -d $OPENSHIFT_DATA_DIR/virtualenv ]; then
-	cd $OPENSHIFT_TMP_DIR
-	wget https://pypi.python.org/packages/source/v/virtualenv/virtualenv-${VIRTUALENV_VERSION}.tar.gz
-	tar zxf virtualenv-${VIRTUALENV_VERSION}.tar.gz
-	cd virtualenv-${VIRTUALENV_VERSION}
-	$OPENSHIFT_DATA_DIR/bin/python virtualenv.py $OPENSHIFT_DATA_DIR/virtualenv
+    cd $OPENSHIFT_TMP_DIR
+    wget https://pypi.python.org/packages/source/v/virtualenv/virtualenv-${VIRTUALENV_VERSION}.tar.gz --no-check-certificate
+    tar zxf virtualenv-${VIRTUALENV_VERSION}.tar.gz
+    cd virtualenv-${VIRTUALENV_VERSION}
+    $OPENSHIFT_DATA_DIR/bin/python virtualenv.py $OPENSHIFT_DATA_DIR/virtualenv
 fi
 
 if [ ! -d $OPENSHIFT_DATA_DIR/nginx/sbin ]; then

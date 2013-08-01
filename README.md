@@ -5,9 +5,9 @@ Python 2.7.4 + Nginx + uWSGI + Django on Openshift
 Setting up Openshift
 --------------------
 
-Create the Openshift application with a DIY and Postgresql 8.4 cartridge (also works on MySQL and SQLite out-of-the-box):
+Create the Openshift application with a DIY and Postgresql 9.2 cartridge (also works on MySQL and SQLite out-of-the-box):
 
-    $ rhc app create <exampleapp> diy-0.1 postgresql-8.4
+    $ rhc app create <exampleapp> diy-0.1 postgresql-9.2
     $ cd <exampleapp>
     $ git remote add upstream -m master git://github.com/seedofjoy/openshift-diy-nginx-uwsgi-django.git
     $ git pull -s recursive -X theirs upstream master
@@ -27,6 +27,8 @@ Pre build stage
 
 The 'pre_build' hook script performs the following actions:
 * Installs Python 2.7.4
+* Installs Setuptools 0.6c11
+* Installs Pip 1.1
 * Installs Virtualenv 1.9.1 and creates virtualenv in $OPENSHIFT_DATA_DIR/virtualenv
 * Installs Nginx 1.4.0
 
